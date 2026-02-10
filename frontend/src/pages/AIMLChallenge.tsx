@@ -622,7 +622,8 @@ const AIMLChallenge = () => {
                     )}
                   </div>
 
-                  {/* Acceptance Rate — bottom of scrollable area */}
+                  {/* Acceptance Rate + Prompt Golf — only on Description tab */}
+                  {leftTab === "description" && <>
                   <div className="px-5 py-4">
                     <div className="flex items-center justify-between text-xs text-code-muted mb-2">
                       <span>Acceptance Rate</span>
@@ -690,6 +691,7 @@ const AIMLChallenge = () => {
                       </div>
                     </div>
                   </div>
+                  </>}
                 </div>
               </div>
             </ResizablePanel>
