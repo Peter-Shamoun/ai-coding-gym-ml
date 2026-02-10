@@ -1,0 +1,149 @@
+id: mnist_digit_recognition
+title: "MNIST Handwritten Digit Recognition"
+difficulty: medium
+category: computer_vision
+estimated_time: "2-3 hours"
+tags:
+  - classification
+  - computer_vision
+  - multiclass
+
+description: |
+  ## MNIST Handwritten Digit Recognition
+
+  Classify handwritten digits (0-9) from 28×28 grayscale images using the MNIST dataset.
+
+  ### Objective
+
+  Build a model that achieves **≥ 97% accuracy** on the held-out test set.
+
+  ### Dataset
+
+  The MNIST dataset contains labeled images of handwritten digits:
+  - **Training set:** 60,000 images
+  - **Test set:** 10,000 images
+  - **Image size:** 28×28 pixels, grayscale
+  - **Pixel values:** 0–255 (uint8)
+  - **Classes:** 10 digits (0–9)
+
+  ### Your Task
+
+  Implement `train_digit_classifier(X_train, y_train)` that:
+  1. Receives the training images and labels
+  2. Trains a digit classifier
+  3. Returns a **prediction function** — a callable that accepts an array
+     of images and returns predicted digit labels (0–9)
+
+  ### Tips
+
+  - Consider normalizing pixel values
+  - Explore different model architectures
+  - Think about the spatial structure of images
+  - Regularization can help prevent overfitting
+
+objective: "Build a model that achieves ≥ 97% accuracy on the held-out test set."
+
+function_name: train_digit_classifier
+starter_code_file: starter_code.py
+timeout_seconds: 600
+run_timeout_seconds: 180
+
+function_contract: |
+  def train_digit_classifier(X_train, y_train):
+      """
+      Train a digit classifier on MNIST data.
+
+      Args:
+          X_train: numpy array of shape (60000, 28, 28), uint8, values 0-255
+          y_train: numpy array of shape (60000,), uint8, values 0-9
+
+      Returns:
+          predict_fn: A callable that takes X_test (shape: (N, 28, 28))
+                     and returns predictions (shape: (N,), values 0-9)
+
+      Example:
+          >>> predict_fn = train_digit_classifier(X_train, y_train)
+          >>> predictions = predict_fn(X_test)
+          >>> predictions.shape
+          (10000,)
+      """
+      # Your code here
+      pass
+
+dataset:
+  description: "MNIST handwritten digit images — 28×28 grayscale with 10-class labels."
+  train_images: mnist_train_images.npy
+  train_labels: mnist_train_labels.npy
+  test_images: mnist_test_images.npy
+  test_labels: mnist_test_labels.npy
+
+allowed_libraries:
+  # Data science core
+  - numpy
+  - scipy
+  - sklearn
+  # Deep learning
+  - tensorflow
+  - keras
+  - torch
+  - torchvision
+  # Image processing
+  - cv2
+  - PIL
+  # Visualization
+  - matplotlib
+  - seaborn
+  # Data
+  - pandas
+  # Python standard library (safe utilities)
+  - collections
+  - copy
+  - itertools
+  - functools
+  - operator
+  - random
+  - math
+  - re
+  - string
+  - json
+  - time
+  - datetime
+  - warnings
+  - typing
+  - abc
+  - dataclasses
+  - enum
+  - numbers
+  - statistics
+  - heapq
+  - bisect
+  - pprint
+  - textwrap
+
+scoring:
+  max_score: 100
+  pass_threshold: 70
+  categories:
+    - name: Execution
+      max_points: 20
+      description: "Code runs without errors and returns valid predictions"
+    - name: Accuracy
+      max_points: 50
+      description: "Test set accuracy: ≥98%→50, ≥97%→40, ≥95%→30, ≥93%→20, ≥90%→10"
+    - name: Per-Class Performance
+      max_points: 20
+      description: "F1-score for each digit class"
+    - name: Code Quality
+      max_points: 10
+      description: "Static analysis for normalization, architecture, regularization"
+
+examples:
+  - input: "28×28 grayscale image of digit '3'"
+    output: 3
+    label: "digit 3"
+  - input: "28×28 grayscale image of digit '7'"
+    output: 7
+    label: "digit 7"
+  - input: "28×28 grayscale image of digit '0'"
+    output: 0
+    label: "digit 0"

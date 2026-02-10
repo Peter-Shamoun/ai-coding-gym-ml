@@ -1,0 +1,168 @@
+id: customer_churn_prediction
+title: "Telco Customer Churn Prediction"
+difficulty: medium
+category: tabular
+estimated_time: "2-3 hours"
+tags:
+  - classification
+  - tabular
+  - binary
+  - imbalanced
+
+description: |
+  ## Telco Customer Churn Prediction
+
+  Predict whether a telecom customer will **churn** (cancel their service) based on
+  demographics, account information, and subscribed services.
+
+  ### Objective
+
+  Build a model that achieves **≥ 85% accuracy** AND **F1 ≥ 0.70** on the churn class.
+
+  ### Dataset
+
+  The Telco Customer Churn dataset contains customer records with ~20 features:
+  - **Training set:** ~5,600 customers
+  - **Test set:** ~1,400 customers
+  - **Target:** `Churn` column — "Yes" or "No"
+  - **Class imbalance:** ~27% churn, ~73% no churn
+
+  Feature categories:
+  - **Demographics:** gender, SeniorCitizen, Partner, Dependents
+  - **Account:** tenure, Contract, PaperlessBilling, PaymentMethod, MonthlyCharges, TotalCharges
+  - **Services:** PhoneService, MultipleLines, InternetService, OnlineSecurity,
+    OnlineBackup, DeviceProtection, TechSupport, StreamingTV, StreamingMovies
+
+  ### Key Challenge
+
+  This dataset is **imbalanced**. Simply predicting "no churn" for everyone gives
+  ~73% accuracy but 0% F1 on churners. You must handle class imbalance!
+
+  ### Your Task
+
+  Implement `train_churn_predictor(df_train)` that:
+  1. Receives the training DataFrame (with `Churn` column)
+  2. Trains a churn predictor
+  3. Returns a **prediction function** that accepts a DataFrame (without `Churn`)
+     and returns predictions (0 = no churn, 1 = churn)
+
+  ### Tips
+
+  - Handle mixed data types (categorical + numerical)
+  - Address class imbalance (class weights, SMOTE, etc.)
+  - Watch out for data quality issues (missing values, type errors)
+  - Feature engineering can make a big difference
+
+objective: "Build a model that achieves ≥ 85% accuracy AND F1 ≥ 0.70 on the churn class."
+
+function_name: train_churn_predictor
+starter_code_file: starter_code.py
+timeout_seconds: 300
+run_timeout_seconds: 120
+
+function_contract: |
+  def train_churn_predictor(df_train):
+      """
+      Train a customer churn predictor.
+
+      Args:
+          df_train: pandas DataFrame with customer features + 'Churn' column
+                   Churn values: "Yes" or "No"
+                   Features: ~20 columns (demographics, account, services)
+
+      Returns:
+          predict_fn: A callable that takes a DataFrame (without 'Churn' column)
+                     and returns predictions (array of 0 or 1)
+                     0 = no churn, 1 = churn
+
+      Example:
+          >>> predict_fn = train_churn_predictor(df_train)
+          >>> predictions = predict_fn(df_test)
+          >>> set(predictions).issubset({0, 1})
+          True
+      """
+      pass
+
+dataset:
+  description: "Telco Customer Churn — tabular data with mixed feature types and class imbalance."
+  train_file: churn_train.csv
+  test_file: churn_test.csv
+  columns:
+    - name: customerID
+      type: string
+      description: Unique customer identifier (should be dropped)
+    - name: gender
+      type: string
+      description: "Male or Female"
+    - name: SeniorCitizen
+      type: int
+      description: "0 or 1"
+    - name: tenure
+      type: int
+      description: "Months with company (0-72)"
+    - name: MonthlyCharges
+      type: float
+      description: "Monthly charge amount"
+    - name: TotalCharges
+      type: string
+      description: "Total charges (may contain blanks!)"
+    - name: Contract
+      type: string
+      description: "Month-to-month, One year, or Two year"
+    - name: Churn
+      type: string
+      description: "Yes or No (target)"
+
+allowed_libraries:
+  - pandas
+  - numpy
+  - scipy
+  - sklearn
+  - re
+  - string
+  - collections
+  - math
+  - random
+  - statistics
+  - itertools
+  - functools
+  - operator
+  - copy
+  - json
+  - csv
+  - time
+  - datetime
+  - warnings
+  - typing
+  - abc
+  - dataclasses
+  - enum
+  - heapq
+  - bisect
+  - pprint
+  - numbers
+
+scoring:
+  max_score: 100
+  pass_threshold: 70
+  categories:
+    - name: Execution
+      max_points: 20
+      description: "Code runs without errors and returns valid predictions"
+    - name: Accuracy
+      max_points: 40
+      description: "Test set accuracy: ≥87%→40, ≥85%→30, ≥83%→20, ≥80%→10"
+    - name: Churn Class F1
+      max_points: 30
+      description: "F1 on churn class: ≥0.75→30, ≥0.70→25, ≥0.65→15, <0.65→5"
+    - name: Code Quality
+      max_points: 10
+      description: "Static analysis for class balancing, feature engineering, threshold tuning"
+
+examples:
+  - input: "Month-to-month contract, 2 months tenure, $70/month, fiber optic"
+    output: 1
+    label: "churn"
+  - input: "Two year contract, 60 months tenure, $20/month, DSL"
+    output: 0
+    label: "no churn"

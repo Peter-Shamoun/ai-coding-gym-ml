@@ -1,0 +1,133 @@
+id: email-spam-detection
+title: Email Spam Detection
+difficulty: easy
+category: ml
+tags:
+  - classification
+  - nlp
+  - binary
+
+description: |
+  ## Email Spam Detection
+
+  Classify emails as **spam** or **ham** (not spam) using the Enron Email Spam Dataset.
+
+  ### Objective
+
+  Build a model that achieves **≥ 93% accuracy** on the held-out test set.
+
+  ### Dataset
+
+  The Enron Email Spam Dataset contains labeled email messages. Each row has:
+  - `text` — the raw email content (including subject line)
+  - `label` — string label: `"spam"` or `"ham"`
+  - `label_num` — numeric label: `1` (spam) or `0` (ham)
+
+  The training set contains ~4,100 emails. Your model will be evaluated
+  on a hidden test set of ~1,000 emails.
+
+  ### Your Task
+
+  Implement `train_spam_detector(df)` that:
+  1. Receives the training DataFrame
+  2. Trains a spam classifier
+  3. Returns a **prediction function** — a callable that accepts a list of
+     email text strings and returns predictions (`0` = ham, `1` = spam)
+
+  ### Tips
+
+  - Preprocess text (lowercase, remove URLs/numbers, etc.)
+  - TF-IDF with bigrams works well for this task
+  - Consider class imbalance (`class_weight='balanced'`)
+  - Ensemble methods can boost accuracy
+
+objective: "Build a model that achieves ≥ 93% accuracy on the held-out test set."
+
+dataset:
+  description: "Enron Email Spam Dataset — labeled email messages with binary labels."
+  train_file: spam_train.csv
+  test_file: spam_test.csv
+  columns:
+    - name: text
+      type: string
+      description: Raw email content
+    - name: label
+      type: string
+      description: '"spam" or "ham"'
+    - name: label_num
+      type: int
+      description: "1 (spam) or 0 (ham)"
+
+function_name: train_spam_detector
+starter_code_file: starter_code.py
+timeout_seconds: 300
+run_timeout_seconds: 120
+
+# ── Allowed libraries ──────────────────────────────────────
+# Only these top-level modules can be imported by user code.
+# Sub-modules are allowed automatically (e.g. sklearn.ensemble).
+# The harness validates imports via AST before execution.
+allowed_libraries:
+  # Data science core
+  - pandas
+  - numpy
+  - scipy
+  - sklearn
+  # Text / NLP
+  - re
+  - string
+  - collections
+  - nltk
+  # Python standard library (safe utilities)
+  - math
+  - random
+  - statistics
+  - itertools
+  - functools
+  - operator
+  - copy
+  - json
+  - csv
+  - time
+  - datetime
+  - warnings
+  - typing
+  - abc
+  - dataclasses
+  - enum
+  - heapq
+  - bisect
+  - pprint
+  - textwrap
+  - unicodedata
+  - numbers
+  - decimal
+  - fractions
+
+scoring:
+  max_score: 100
+  pass_threshold: 80
+  categories:
+    - name: Execution
+      max_points: 20
+      description: Code runs successfully and produces valid predictions
+    - name: Accuracy
+      max_points: 50
+      description: "Tiered: ≥95%→50, ≥93%→40, ≥91%→30, ≥89%→20, ≥85%→10"
+    - name: Precision & Recall
+      max_points: 20
+      description: "Spam precision > 0.90 (10 pts) + Spam recall > 0.90 (10 pts)"
+    - name: Code Quality
+      max_points: 10
+      description: Static analysis for preprocessing, imbalance handling, feature engineering
+
+examples:
+  - input: "Subject: Free money! Click here now!\nCongratulations, you have won..."
+    output: 1
+    label: spam
+  - input: "Subject: Meeting agenda for tomorrow\nHi team, please review the attached document."
+    output: 0
+    label: ham
+  - input: "Subject: URGENT: Your account has been compromised\nDear user, click this link immediately..."
+    output: 1
+    label: spam

@@ -1,0 +1,150 @@
+id: imdb_sentiment_analysis
+title: "IMDB Sentiment Analysis"
+difficulty: medium
+category: nlp
+estimated_time: "2-3 hours"
+tags:
+  - classification
+  - nlp
+  - binary
+  - sentiment
+
+description: |
+  ## IMDB Sentiment Analysis
+
+  Classify movie reviews as **positive** or **negative** using the IMDB dataset.
+
+  ### Objective
+
+  Build a model that achieves **≥ 89% accuracy** on the held-out test set.
+
+  ### Dataset
+
+  The IMDB dataset contains movie reviews with binary sentiment labels:
+  - **Training set:** 40,000 reviews
+  - **Test set:** 10,000 reviews
+  - **Classes:** 2 (0 = negative, 1 = positive)
+
+  Each row has:
+  - `text` — the full movie review text
+  - `sentiment` — 0 (negative) or 1 (positive)
+
+  ### Your Task
+
+  Implement `train_sentiment_classifier(df_train)` that:
+  1. Receives the training DataFrame
+  2. Trains a sentiment classifier
+  3. Returns a **prediction function** — a callable that accepts a DataFrame
+     with a `text` column and returns predictions (0 or 1)
+
+  ### Tips
+
+  - Preprocess text (lowercase, remove HTML, handle punctuation)
+  - Consider how negation changes meaning ("not good" ≠ "good")
+  - TF-IDF with n-grams is a strong baseline
+  - Advanced: Try word embeddings or deep learning approaches
+
+objective: "Build a model that achieves ≥ 89% accuracy on the held-out test set."
+
+function_name: train_sentiment_classifier
+starter_code_file: starter_code.py
+timeout_seconds: 300
+run_timeout_seconds: 120
+
+function_contract: |
+  def train_sentiment_classifier(df_train):
+      """
+      Train a sentiment classifier on IMDB movie reviews.
+
+      Args:
+          df_train: pandas DataFrame with columns ['text', 'sentiment']
+                   text: str — movie review text
+                   sentiment: int — 0 (negative) or 1 (positive)
+
+      Returns:
+          predict_fn: A callable that takes a DataFrame with 'text' column
+                     and returns predictions (array of 0 or 1)
+
+      Example:
+          >>> predict_fn = train_sentiment_classifier(df_train)
+          >>> predictions = predict_fn(df_test)
+          >>> set(predictions).issubset({0, 1})
+          True
+      """
+      pass
+
+dataset:
+  description: "IMDB Movie Reviews — binary sentiment classification."
+  train_file: imdb_train.csv
+  test_file: imdb_test.csv
+  columns:
+    - name: text
+      type: string
+      description: Movie review text
+    - name: sentiment
+      type: int
+      description: "0 (negative) or 1 (positive)"
+
+allowed_libraries:
+  - pandas
+  - numpy
+  - scipy
+  - sklearn
+  - re
+  - string
+  - collections
+  - nltk
+  - tensorflow
+  - keras
+  - torch
+  - transformers
+  - math
+  - random
+  - statistics
+  - itertools
+  - functools
+  - operator
+  - copy
+  - json
+  - csv
+  - time
+  - datetime
+  - warnings
+  - typing
+  - abc
+  - dataclasses
+  - enum
+  - heapq
+  - bisect
+  - pprint
+  - textwrap
+  - unicodedata
+  - numbers
+
+scoring:
+  max_score: 100
+  pass_threshold: 70
+  categories:
+    - name: Execution
+      max_points: 20
+      description: "Code runs without errors and returns valid predictions"
+    - name: Accuracy
+      max_points: 50
+      description: "Test set accuracy: ≥91%→50, ≥89%→40, ≥87%→30, ≥85%→20, ≥82%→10"
+    - name: Precision & Recall
+      max_points: 20
+      description: "Precision and recall for positive and negative classes"
+    - name: Code Quality
+      max_points: 10
+      description: "Static analysis for text cleaning, negation handling, advanced techniques"
+
+examples:
+  - input: "This movie was absolutely fantastic! Great acting and beautiful cinematography."
+    output: 1
+    label: "positive"
+  - input: "Terrible film. Waste of time. The plot made no sense and the acting was wooden."
+    output: 0
+    label: "negative"
+  - input: "An interesting concept but poorly executed. Not recommended."
+    output: 0
+    label: "negative"

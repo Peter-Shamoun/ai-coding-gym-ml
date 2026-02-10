@@ -30,7 +30,28 @@ desktop.ini
 
 # Project-specific
 submissions/
+gym_sandbox_*/
 *.log
 
+# Old single-challenge files (kept locally, not tracked)
+/index.html
+check_submission.py
+grade_submission.py
+baseline.py
+improved.py
+advanced.py
+better_features.py
+good_solution.py
+generate_test_submissions.py
+package.py
+test_suite.py
+dataset_info.txt
+email-spam-challenge-package/
+test_submissions/
+
 # Docker
+Dockerfile
 .dockerignore
+
+# Separate frontend project (not part of this repo)
+lovable-project-*/

@@ -1,0 +1,172 @@
+id: housing_price_prediction
+title: "California Housing Price Prediction"
+difficulty: medium
+category: tabular
+estimated_time: "2-3 hours"
+tags:
+  - regression
+  - tabular
+  - feature_engineering
+
+description: |
+  ## California Housing Price Prediction
+
+  Predict **median house values** in California districts using census features.
+
+  ### Objective
+
+  Build a model that achieves **R² ≥ 0.82** AND **RMSE ≤ 0.55**.
+
+  ### Dataset
+
+  The California Housing dataset contains district-level census data:
+  - **Training set:** 16,512 districts
+  - **Test set:** 4,128 districts
+  - **Target:** `MedHouseVal` — median house value (in $100,000s)
+
+  Features (8 total):
+  - `MedInc` — median income in district
+  - `HouseAge` — median house age
+  - `AveRooms` — average rooms per household
+  - `AveBedrms` — average bedrooms per household
+  - `Population` — district population
+  - `AveOccup` — average occupants per household
+  - `Latitude` — district latitude
+  - `Longitude` — district longitude
+
+  ### Key Challenge
+
+  This is a **regression** problem — predict continuous values, not classes!
+  Simple linear regression gives R² ≈ 0.60. You need feature engineering
+  and better models to reach the target.
+
+  ### Your Task
+
+  Implement `train_price_predictor(df_train)` that:
+  1. Receives the training DataFrame (with `MedHouseVal` column)
+  2. Trains a price prediction model
+  3. Returns a **prediction function** that accepts a DataFrame (without `MedHouseVal`)
+     and returns predicted prices (array of floats)
+
+  ### Tips
+
+  - Scale your features (StandardScaler, MinMaxScaler)
+  - Try polynomial / interaction features
+  - Watch for outliers in AveRooms, AveOccup, Population
+  - Latitude/Longitude encode geographic location — consider interactions
+  - Tree-based models (Random Forest, Gradient Boosting) work well
+
+objective: "Build a model that achieves R² ≥ 0.82 AND RMSE ≤ 0.55."
+
+function_name: train_price_predictor
+starter_code_file: starter_code.py
+timeout_seconds: 300
+run_timeout_seconds: 120
+
+function_contract: |
+  def train_price_predictor(df_train):
+      """
+      Train a housing price predictor on California Housing data.
+
+      Args:
+          df_train: pandas DataFrame with 8 feature columns + 'MedHouseVal' target
+                   MedHouseVal is median house value in $100,000s
+
+      Returns:
+          predict_fn: A callable that takes a DataFrame (without 'MedHouseVal')
+                     and returns predicted prices (array of floats)
+
+      Example:
+          >>> predict_fn = train_price_predictor(df_train)
+          >>> predictions = predict_fn(df_test)
+          >>> len(predictions) == len(df_test)
+          True
+      """
+      pass
+
+dataset:
+  description: "California Housing — regression with 8 numeric features."
+  train_file: housing_train.csv
+  test_file: housing_test.csv
+  columns:
+    - name: MedInc
+      type: float
+      description: "Median income in district"
+    - name: HouseAge
+      type: float
+      description: "Median house age"
+    - name: AveRooms
+      type: float
+      description: "Average rooms per household"
+    - name: AveBedrms
+      type: float
+      description: "Average bedrooms per household"
+    - name: Population
+      type: float
+      description: "District population"
+    - name: AveOccup
+      type: float
+      description: "Average occupants per household"
+    - name: Latitude
+      type: float
+      description: "District latitude"
+    - name: Longitude
+      type: float
+      description: "District longitude"
+    - name: MedHouseVal
+      type: float
+      description: "Median house value in $100,000s (TARGET)"
+
+allowed_libraries:
+  - pandas
+  - numpy
+  - scipy
+  - sklearn
+  - re
+  - string
+  - collections
+  - math
+  - random
+  - statistics
+  - itertools
+  - functools
+  - operator
+  - copy
+  - json
+  - csv
+  - time
+  - datetime
+  - warnings
+  - typing
+  - abc
+  - dataclasses
+  - enum
+  - heapq
+  - bisect
+  - pprint
+  - numbers
+
+scoring:
+  max_score: 100
+  pass_threshold: 70
+  categories:
+    - name: Execution
+      max_points: 20
+      description: "Code runs without errors and returns valid predictions"
+    - name: R² Score
+      max_points: 40
+      description: "R² score: ≥0.85→40, ≥0.82→30, ≥0.78→20, ≥0.75→10"
+    - name: RMSE
+      max_points: 30
+      description: "RMSE: ≤0.50→30, ≤0.55→25, ≤0.60→15, >0.60→5"
+    - name: Code Quality
+      max_points: 10
+      description: "Static analysis for feature scaling, polynomial features, outlier handling"
+
+examples:
+  - input: "MedInc=8.3, HouseAge=41, AveRooms=6.9, Lat=37.88, Long=-122.23"
+    output: 4.526
+    label: "$452,600"
+  - input: "MedInc=3.5, HouseAge=25, AveRooms=5.2, Lat=34.05, Long=-118.25"
+    output: 1.85
+    label: "$185,000"
