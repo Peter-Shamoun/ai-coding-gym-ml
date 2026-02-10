@@ -10,6 +10,8 @@ Provides REST APIs for:
   - AI agent for code generation     (POST /api/agent/chat)
 """
 
+import os
+
 from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 
@@ -18,7 +20,7 @@ from config import Config
 
 def create_app(config_class=Config):
     """Application factory."""
-    app = Flask(__name__, static_folder="static")
+    app = Flask(__name__, static_folder="static", static_url_path="")
     app.config.from_object(config_class)
     CORS(app)
 
@@ -37,9 +39,19 @@ def create_app(config_class=Config):
     def health():
         return jsonify({"status": "ok"})
 
-    @app.route("/")
-    def index():
-        return send_from_directory("static", "index.html")
+    # ── SPA catch-all ────────────────────────────────────────
+    # Serve static files (JS/CSS/images) directly, and fall back
+    # to index.html for all other routes so React Router handles them.
+
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
+    def serve_spa(path):
+        # If the path maps to an actual static file, serve it
+        static_file = os.path.join(app.static_folder, path)
+        if path and os.path.isfile(static_file):
+            return send_from_directory(app.static_folder, path)
+        # Otherwise, serve index.html for React Router
+        return send_from_directory(app.static_folder, "index.html")
 
     return app
 
