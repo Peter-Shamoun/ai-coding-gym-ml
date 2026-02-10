@@ -19,6 +19,7 @@ import {
   Clock,
   AlertTriangle,
   Trophy,
+  MessageSquare,
   Bot,
   Square,
 } from "lucide-react";
@@ -419,229 +420,276 @@ const AIMLChallenge = () => {
                   ))}
                 </div>
 
-                {/* Social metrics bar */}
-                <div className="flex items-center gap-6 px-5 py-2.5 border-b border-code-border bg-code-border/10 shrink-0">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-mono text-code-muted uppercase tracking-wider">Acceptance Rate</span>
-                    <span className="text-sm font-semibold text-code-foreground">
-                      {metrics?.acceptance_rate ?? challenge?.acceptance ?? 0}%
-                    </span>
-                  </div>
-                  <div className="w-px h-7 bg-code-border" />
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-mono text-code-muted uppercase tracking-wider">Prompt Golf</span>
-                    <span className="text-sm font-semibold text-code-foreground">
-                      {metrics?.shortest_prompt ?? "—"} chars
-                    </span>
-                  </div>
-                  <div className="w-px h-7 bg-code-border" />
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-mono text-code-muted uppercase tracking-wider">Your Prompt</span>
-                    <span className="text-sm font-semibold text-code-foreground">
-                      {prompt.length} chars
-                    </span>
-                  </div>
-                </div>
+                {/* Scrollable tab content */}
+                <div className="flex-1 overflow-auto">
+                  <div className="px-5 py-4">
+                    {/* Description tab */}
+                    {leftTab === "description" && (
+                      <div className="text-sm text-code-foreground/80 leading-relaxed">
+                        <MarkdownRenderer content={description} />
+                      </div>
+                    )}
 
-                {/* Tab content */}
-                <div className="flex-1 overflow-auto px-5 py-4">
-                  {/* Description tab */}
-                  {leftTab === "description" && (
-                    <div className="text-sm text-code-foreground/80 leading-relaxed">
-                      <MarkdownRenderer content={description} />
-                    </div>
-                  )}
-
-                  {/* Examples tab */}
-                  {leftTab === "examples" && (
-                    <>
-                      {challenge.datasetSamples &&
-                      challenge.datasetSamples.length > 0 ? (
-                        <div className="space-y-3">
-                          {challenge.datasetSamples.map((sample, i) => (
-                            <div
-                              key={i}
-                              className="rounded-lg bg-code-border/30 p-3.5 space-y-2"
-                            >
-                              <div>
-                                <span className="text-xs font-mono text-code-blue mb-1 block">
-                                  Features:
-                                </span>
-                                <pre className="text-xs font-mono text-code-foreground whitespace-pre-wrap">
-                                  {sample.features}
-                                </pre>
-                              </div>
-                              <div>
-                                <span className="text-xs font-mono text-code-green mb-1 block">
-                                  Label:
-                                </span>
-                                <pre className="text-xs font-mono text-code-foreground whitespace-pre-wrap">
-                                  {sample.label}
-                                </pre>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          {challenge.testCases.map((tc, i) => (
-                            <div
-                              key={i}
-                              className="rounded-lg bg-code-border/30 p-3.5 space-y-2"
-                            >
-                              <div>
-                                <span className="text-xs font-mono text-code-blue mb-1 block">
-                                  Input:
-                                </span>
-                                <pre className="text-xs font-mono text-code-foreground whitespace-pre-wrap">
-                                  {tc.input}
-                                </pre>
-                              </div>
-                              <div>
-                                <span className="text-xs font-mono text-code-green mb-1 block">
-                                  Output:
-                                </span>
-                                <pre className="text-xs font-mono text-code-foreground whitespace-pre-wrap">
-                                  {tc.output}
-                                </pre>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  {/* Rubric tab */}
-                  {leftTab === "rubric" && (
-                    <>
-                      {challenge.gradingRubric ? (
-                        <div className="text-sm text-code-foreground/80 leading-relaxed">
-                          <MarkdownRenderer content={challenge.gradingRubric} />
-                        </div>
-                      ) : scoring ? (
-                        <div className="space-y-2 text-sm text-code-foreground/80">
-                          <p>
-                            Pass threshold: {scoring.pass_threshold ?? "\u2014"}/
-                            {scoring.max_score ?? 100}
-                          </p>
-                          {scoring.categories?.map((cat, i) => (
-                            <div key={i} className="text-xs text-code-muted">
-                              {cat.name}: {cat.max_score} pts
-                              {cat.description ? ` \u2014 ${cat.description}` : ""}
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <p className="text-sm text-code-foreground/80">
-                            Target: {challenge.targetMetrics}
-                          </p>
-                        </div>
-                      )}
-                    </>
-                  )}
-
-                  {/* Data tab — libraries, dataset info, downloads, deliverables */}
-                  {leftTab === "data" && (
-                    <div className="space-y-6">
-                      {/* Allowed Libraries */}
-                      {allowedLibs.length > 0 && (
-                        <div>
-                          <h3 className="text-xs font-mono font-semibold text-code-foreground uppercase tracking-wider mb-3">
-                            Allowed Libraries
-                          </h3>
-                          <div className="flex gap-2 flex-wrap">
-                            {allowedLibs.map((lib) => (
-                              <Badge
-                                key={lib}
-                                variant="outline"
-                                className="text-xs font-mono"
+                    {/* Examples tab */}
+                    {leftTab === "examples" && (
+                      <>
+                        {challenge.datasetSamples &&
+                        challenge.datasetSamples.length > 0 ? (
+                          <div className="space-y-3">
+                            {challenge.datasetSamples.map((sample, i) => (
+                              <div
+                                key={i}
+                                className="rounded-lg bg-code-border/30 p-3.5 space-y-2"
                               >
-                                {lib}
-                              </Badge>
+                                <div>
+                                  <span className="text-xs font-mono text-code-blue mb-1 block">
+                                    Features:
+                                  </span>
+                                  <pre className="text-xs font-mono text-code-foreground whitespace-pre-wrap">
+                                    {sample.features}
+                                  </pre>
+                                </div>
+                                <div>
+                                  <span className="text-xs font-mono text-code-green mb-1 block">
+                                    Label:
+                                  </span>
+                                  <pre className="text-xs font-mono text-code-foreground whitespace-pre-wrap">
+                                    {sample.label}
+                                  </pre>
+                                </div>
+                              </div>
                             ))}
                           </div>
-                        </div>
-                      )}
-
-                      {/* Dataset Downloads */}
-                      <div>
-                        <h3 className="text-xs font-mono font-semibold text-code-foreground uppercase tracking-wider mb-3">
-                          Dataset
-                        </h3>
-                        <div className="space-y-3">
-                          {backendId && trainFile && (
-                            <div>
-                              <span className="text-xs font-mono text-code-muted block mb-1">
-                                Download Training Data
-                              </span>
-                              <a
-                                href={getDatasetDownloadUrl(backendId, trainFile)}
-                                download
-                                className="text-xs font-mono text-code-blue hover:underline break-all"
+                        ) : (
+                          <div className="space-y-3">
+                            {challenge.testCases.map((tc, i) => (
+                              <div
+                                key={i}
+                                className="rounded-lg bg-code-border/30 p-3.5 space-y-2"
                               >
-                                {trainFile}
-                              </a>
-                            </div>
-                          )}
-                          {dataset?.columns && dataset.columns.length > 0 && (
-                            <div>
-                              <span className="text-xs font-mono text-code-muted block mb-2">
-                                Columns
-                              </span>
-                              <div className="space-y-1">
-                                {dataset.columns.map((col, i) => (
-                                  <div
-                                    key={i}
-                                    className="text-xs font-mono text-code-foreground/80"
-                                  >
-                                    <span className="text-code-blue">{col.name}</span>
-                                    {col.type && (
-                                      <span className="text-code-muted">
-                                        {" "}({col.type})
-                                      </span>
-                                    )}
-                                    {col.description && (
-                                      <span className="text-code-muted">
-                                        {" "}\u2014 {col.description}
-                                      </span>
-                                    )}
-                                  </div>
-                                ))}
+                                <div>
+                                  <span className="text-xs font-mono text-code-blue mb-1 block">
+                                    Input:
+                                  </span>
+                                  <pre className="text-xs font-mono text-code-foreground whitespace-pre-wrap">
+                                    {tc.input}
+                                  </pre>
+                                </div>
+                                <div>
+                                  <span className="text-xs font-mono text-code-green mb-1 block">
+                                    Output:
+                                  </span>
+                                  <pre className="text-xs font-mono text-code-foreground whitespace-pre-wrap">
+                                    {tc.output}
+                                  </pre>
+                                </div>
                               </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {/* Rubric tab */}
+                    {leftTab === "rubric" && (
+                      <>
+                        {challenge.gradingRubric ? (
+                          <div className="text-sm text-code-foreground/80 leading-relaxed">
+                            <MarkdownRenderer content={challenge.gradingRubric} />
+                          </div>
+                        ) : scoring ? (
+                          <div className="space-y-2 text-sm text-code-foreground/80">
+                            <p>
+                              Pass threshold: {scoring.pass_threshold ?? "\u2014"}/
+                              {scoring.max_score ?? 100}
+                            </p>
+                            {scoring.categories?.map((cat, i) => (
+                              <div key={i} className="text-xs text-code-muted">
+                                {cat.name}: {cat.max_score} pts
+                                {cat.description ? ` \u2014 ${cat.description}` : ""}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            <p className="text-sm text-code-foreground/80">
+                              Target: {challenge.targetMetrics}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {/* Data tab — libraries, dataset info, downloads, deliverables */}
+                    {leftTab === "data" && (
+                      <div className="space-y-6">
+                        {/* Allowed Libraries */}
+                        {allowedLibs.length > 0 && (
+                          <div>
+                            <h3 className="text-xs font-mono font-semibold text-code-foreground uppercase tracking-wider mb-3">
+                              Allowed Libraries
+                            </h3>
+                            <div className="flex gap-2 flex-wrap">
+                              {allowedLibs.map((lib) => (
+                                <Badge
+                                  key={lib}
+                                  variant="outline"
+                                  className="text-xs font-mono"
+                                >
+                                  {lib}
+                                </Badge>
+                              ))}
                             </div>
-                          )}
-                          {!trainFile && challenge.dataDownloadUrl && (
-                            <div>
-                              <span className="text-xs font-mono text-code-muted block mb-1">
-                                Dataset Reference
-                              </span>
-                              <a
-                                href={challenge.dataDownloadUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs font-mono text-code-blue hover:underline break-all"
-                              >
-                                {challenge.dataDownloadUrl}
-                              </a>
-                            </div>
-                          )}
+                          </div>
+                        )}
+
+                        {/* Dataset Downloads */}
+                        <div>
+                          <h3 className="text-xs font-mono font-semibold text-code-foreground uppercase tracking-wider mb-3">
+                            Dataset
+                          </h3>
+                          <div className="space-y-3">
+                            {backendId && trainFile && (
+                              <div>
+                                <span className="text-xs font-mono text-code-muted block mb-1">
+                                  Download Training Data
+                                </span>
+                                <a
+                                  href={getDatasetDownloadUrl(backendId, trainFile)}
+                                  download
+                                  className="text-xs font-mono text-code-blue hover:underline break-all"
+                                >
+                                  {trainFile}
+                                </a>
+                              </div>
+                            )}
+                            {dataset?.columns && dataset.columns.length > 0 && (
+                              <div>
+                                <span className="text-xs font-mono text-code-muted block mb-2">
+                                  Columns
+                                </span>
+                                <div className="space-y-1">
+                                  {dataset.columns.map((col, i) => (
+                                    <div
+                                      key={i}
+                                      className="text-xs font-mono text-code-foreground/80"
+                                    >
+                                      <span className="text-code-blue">{col.name}</span>
+                                      {col.type && (
+                                        <span className="text-code-muted">
+                                          {" "}({col.type})
+                                        </span>
+                                      )}
+                                      {col.description && (
+                                        <span className="text-code-muted">
+                                          {" "}\u2014 {col.description}
+                                        </span>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {!trainFile && challenge.dataDownloadUrl && (
+                              <div>
+                                <span className="text-xs font-mono text-code-muted block mb-1">
+                                  Dataset Reference
+                                </span>
+                                <a
+                                  href={challenge.dataDownloadUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs font-mono text-code-blue hover:underline break-all"
+                                >
+                                  {challenge.dataDownloadUrl}
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Deliverables */}
+                        <div>
+                          <h3 className="text-xs font-mono font-semibold text-code-foreground uppercase tracking-wider mb-3">
+                            Deliverables
+                          </h3>
+                          <p className="text-sm text-code-foreground/80 leading-relaxed">
+                            {challenge.deliverables ||
+                              "A working solution that meets the grading criteria."}
+                          </p>
                         </div>
                       </div>
+                    )}
+                  </div>
 
-                      {/* Deliverables */}
-                      <div>
-                        <h3 className="text-xs font-mono font-semibold text-code-foreground uppercase tracking-wider mb-3">
-                          Deliverables
-                        </h3>
-                        <p className="text-sm text-code-foreground/80 leading-relaxed">
-                          {challenge.deliverables ||
-                            "A working solution that meets the grading criteria."}
-                        </p>
+                  {/* Acceptance Rate — bottom of scrollable area */}
+                  <div className="px-5 py-4">
+                    <div className="flex items-center justify-between text-xs text-code-muted mb-2">
+                      <span>Acceptance Rate</span>
+                      <span className="font-mono">{metrics?.acceptance_rate ?? challenge?.acceptance ?? 0}%</span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-code-border overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-code-green/60"
+                        style={{ width: `${metrics?.acceptance_rate ?? challenge?.acceptance ?? 0}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Prompt Golf card — bottom of scrollable area */}
+                  <div className="px-5 py-4 border-t border-code-border">
+                    <div className="rounded-lg bg-code-border/20 border border-code-border p-4 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="w-4 h-4 text-code-yellow" />
+                        <span className="text-xs font-mono font-semibold text-code-foreground">
+                          Prompt Golf
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-code-muted flex items-center gap-1.5">
+                            <Trophy className="w-3 h-3 text-code-yellow" />
+                            Shortest passing prompt
+                          </span>
+                          <span className="font-mono font-semibold text-code-green">
+                            {metrics?.shortest_prompt ?? "\u2014"} chars
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-code-muted flex items-center gap-1.5">
+                            <MessageSquare className="w-3 h-3 text-code-blue" />
+                            Your current prompt
+                          </span>
+                          <span className={`font-mono font-semibold ${
+                            prompt.length === 0
+                              ? "text-code-muted"
+                              : prompt.length <= (metrics?.shortest_prompt ?? 999)
+                              ? "text-code-green"
+                              : "text-code-foreground"
+                          }`}>
+                            {prompt.length} chars
+                          </span>
+                        </div>
+                        {prompt.length > 0 && (
+                          <div className="w-full h-1.5 rounded-full bg-code-border overflow-hidden mt-1">
+                            <div
+                              className={`h-full rounded-full transition-all duration-300 ${
+                                prompt.length <= (metrics?.shortest_prompt ?? 999) ? "bg-code-green" : "bg-code-blue"
+                              }`}
+                              style={{
+                                width: `${Math.min(100, ((metrics?.shortest_prompt ?? 80) / Math.max(prompt.length, 1)) * 100)}%`,
+                              }}
+                            />
+                          </div>
+                        )}
+                        {prompt.length > 0 && prompt.length <= (metrics?.shortest_prompt ?? 0) && (
+                          <p className="text-[10px] text-code-green font-mono mt-1">
+                            You're beating the record!
+                          </p>
+                        )}
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </ResizablePanel>
