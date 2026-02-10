@@ -10,8 +10,6 @@ tags:
   - imbalanced
 
 description: |
-  ## Telco Customer Churn Prediction
-
   Predict whether a telecom customer will **churn** (cancel their service) based on
   demographics, account information, and subscribed services.
 

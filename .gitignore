@@ -53,5 +53,8 @@ test_submissions/
 Dockerfile
 .dockerignore
 
-# Separate frontend project (not part of this repo)
+# Separate frontend project (original Loveable export, not tracked)
 lovable-project-*/
+
+# Frontend
+frontend/node_modules/

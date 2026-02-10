@@ -1,0 +1,44 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# README files
+README*
+**/README*
+
+# Backend
+backend/node_modules
+backend/.env
+backend/*.log
+
+# Deployment files (不要提交部署相关文件)
+ecosystem.config.js
+ecosystem.config.cjs
+nginx.conf
+setup-server.sh
+deploy.sh
+DEPLOY.md
+QUICK_START.md
+env.template
+*.env.example

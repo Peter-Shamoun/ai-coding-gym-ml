@@ -9,8 +9,6 @@ tags:
   - feature_engineering
 
 description: |
-  ## California Housing Price Prediction
-
   Predict **median house values** in California districts using census features.
 
   ### Objective

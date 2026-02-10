@@ -8,8 +8,6 @@ tags:
   - binary
 
 description: |
-  ## Email Spam Detection
-
   Classify emails as **spam** or **ham** (not spam) using the Enron Email Spam Dataset.
 
   ### Objective

@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 20% 97%;
+    --foreground: 30 10% 12%;
+
+    --card: 40 15% 95%;
+    --card-foreground: 30 10% 12%;
+
+    --popover: 40 20% 97%;
+    --popover-foreground: 30 10% 12%;
+
+    --primary: 24 80% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 40 12% 90%;
+    --secondary-foreground: 30 10% 20%;
+
+    --muted: 40 10% 92%;
+    --muted-foreground: 30 6% 50%;
+
+    --accent: 24 80% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 35 12% 88%;
+    --input: 35 12% 88%;
+    --ring: 24 80% 55%;
+
+    --radius: 0.625rem;
+
+    --code-bg: 220 18% 10%;
+    --code-foreground: 210 14% 83%;
+    --code-accent: 24 80% 60%;
+    --code-muted: 220 10% 40%;
+    --code-green: 142 50% 60%;
+    --code-blue: 210 60% 65%;
+    --code-yellow: 45 80% 65%;
+    --code-border: 220 15% 18%;
+
+    --surface-elevated: 40 18% 99%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 220 18% 8%;
+    --foreground: 210 14% 90%;
+
+    --card: 220 16% 12%;
+    --card-foreground: 210 14% 90%;
+
+    --popover: 220 18% 8%;
+    --popover-foreground: 210 14% 90%;
+
+    --primary: 24 80% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 16%;
+    --secondary-foreground: 210 14% 85%;
+
+    --muted: 220 12% 18%;
+    --muted-foreground: 210 8% 55%;
+
+    --accent: 24 80% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 14% 18%;
+    --input: 220 14% 18%;
+    --ring: 24 80% 55%;
+
+    --code-bg: 220 20% 6%;
+    --code-foreground: 210 14% 80%;
+    --code-accent: 24 80% 60%;
+    --code-muted: 220 10% 35%;
+    --code-green: 142 50% 55%;
+    --code-blue: 210 60% 60%;
+    --code-yellow: 45 80% 60%;
+    --code-border: 220 15% 14%;
+
+    --surface-elevated: 220 16% 10%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  /* Scale up base font on large displays so the UI isn't tiny */
+  html {
+    font-size: 16px;
+  }
+  @media (min-width: 1440px) {
+    html {
+      font-size: 18px;
+    }
+  }
+  @media (min-width: 1920px) {
+    html {
+      font-size: 19px;
+    }
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .font-mono-code {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Light code editor theme — applied locally to challenge pages */
+.code-light {
+  --code-bg: 40 15% 96%;
+  --code-foreground: 220 12% 20%;
+  --code-accent: 24 80% 50%;
+  --code-muted: 220 8% 55%;
+  --code-green: 142 50% 38%;
+  --code-blue: 210 60% 45%;
+  --code-yellow: 40 70% 42%;
+  --code-border: 220 12% 85%;
+}

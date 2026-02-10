@@ -10,8 +10,6 @@ tags:
   - sentiment
 
 description: |
-  ## IMDB Sentiment Analysis
-
   Classify movie reviews as **positive** or **negative** using the IMDB dataset.
 
   ### Objective

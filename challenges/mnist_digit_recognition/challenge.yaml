@@ -9,8 +9,6 @@ tags:
   - multiclass
 
 description: |
-  ## MNIST Handwritten Digit Recognition
-
   Classify handwritten digits (0-9) from 28×28 grayscale images using the MNIST dataset.
 
   ### Objective
