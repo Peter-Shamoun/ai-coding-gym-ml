@@ -4,6 +4,7 @@ Execution API — run and submit code for challenges.
 
 from flask import Blueprint, jsonify, request
 
+from api.stats import record_submission
 from challenges.registry import ChallengeRegistry
 from config import Config
 from engine.executor import execute_challenge
@@ -55,7 +56,7 @@ def submit_code(challenge_id: str):
 
     Request JSON::
 
-        { "code": "<python source code>" }
+        { "code": "<python source code>", "prompt_text": "<optional user prompt>" }
     """
     registry = ChallengeRegistry()
     if registry.get(challenge_id) is None:
@@ -63,6 +64,7 @@ def submit_code(challenge_id: str):
 
     data = request.get_json(silent=True) or {}
     code = data.get("code", "")
+    prompt_text = data.get("prompt_text", "") or ""
 
     if not code.strip():
         return jsonify({"error": "No code provided."}), 400
@@ -75,4 +77,8 @@ def submit_code(challenge_id: str):
         )
 
     result = execute_challenge(challenge_id, code, mode="submit")
+    # Record for social metrics (acceptance rate, prompt golf)
+    if result.grading is not None:
+        passed = result.grading.get("passed", False)
+        record_submission(challenge_id, passed=passed, prompt_text=prompt_text)
     return jsonify(result.to_dict())
