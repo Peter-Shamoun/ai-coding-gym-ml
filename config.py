@@ -5,7 +5,9 @@ Application configuration.
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Load variables from .env file
+# Load .env from project root so it's found regardless of cwd
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
 class Config:
@@ -17,7 +19,7 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-key-change-in-production")
 
     # ── Paths ────────────────────────────────────────────────
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    BASE_DIR = BASE_DIR
     CHALLENGES_DIR = os.path.join(BASE_DIR, "challenges")
     SUBMISSIONS_DIR = os.path.join(BASE_DIR, "submissions")
 
