@@ -82,14 +82,6 @@ allowed_libraries:
   - numpy
   - scipy
   - sklearn
-  # Deep learning
-  - tensorflow
-  - keras
-  - torch
-  - torchvision
-  # Image processing
-  - cv2
-  - PIL
   # Visualization
   - matplotlib
   - seaborn
