@@ -44,10 +44,13 @@ def create_app(config_class=Config):
     return app
 
 
+# ── Module-level app instance (used by gunicorn: app:app) ────
+app = create_app()
+
+
 # ── Entry point ──────────────────────────────────────────────
 
 if __name__ == "__main__":
-    app = create_app()
 
     print("=" * 58)
     print("  AI Coding Gym — Backend Server  (v2.0)")
