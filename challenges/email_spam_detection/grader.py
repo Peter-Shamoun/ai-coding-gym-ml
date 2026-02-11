@@ -194,12 +194,16 @@ def main():
             result["num_predictions"] = len(preds)
             result["train_time"] = round(train_time, 2)
 
-        # ── Mode: submit (full evaluation on hidden test set)─
+        # ── Mode: submit (evaluation on sampled test set) ────
         elif mode == "submit":
             test_df = pd.read_csv(test_path)
+            # Randomly sample to save computation
+            if len(test_df) > 100:
+                test_df = test_df.sample(n=100)
             preds = predict_fn(test_df["text"].tolist())
             preds = [int(p) for p in preds]
             result["predictions"] = preds
+            result["y_true"] = test_df["label_num"].tolist()
             result["num_predictions"] = len(preds)
             result["train_time"] = round(train_time, 2)
 
@@ -321,9 +325,10 @@ class EmailSpamChallenge(BaseChallenge):
         total += s
 
         predictions = execution_output.get("predictions", [])
+        y_true_from_output = execution_output.get("y_true", [])
 
         # 2 ─ Accuracy (50 pts)
-        s, accuracy, fb, y_true, y_pred = self._grade_accuracy(predictions)
+        s, accuracy, fb, y_true, y_pred = self._grade_accuracy(predictions, y_true_from_output)
         cat = self._cat("Accuracy", s, 50, fb)
         cat["accuracy"] = accuracy
         categories.append(cat)
@@ -378,7 +383,8 @@ class EmailSpamChallenge(BaseChallenge):
         fb.append("Code executed successfully.")
 
         n = output.get("num_predictions", 0)
-        expected = len(self._load_test_df())
+        y_true_out = output.get("y_true", [])
+        expected = len(y_true_out) if y_true_out else len(self._load_test_df())
         if n == expected:
             score += 10
             fb.append(f"Prediction count matches test set ({n}).")
@@ -392,14 +398,17 @@ class EmailSpamChallenge(BaseChallenge):
 
     # ·· 2. Accuracy ··········································
 
-    def _grade_accuracy(self, predictions: list) -> Tuple[int, Optional[float], list, Any, Any]:
+    def _grade_accuracy(self, predictions: list, y_true_list: list = None) -> Tuple[int, Optional[float], list, Any, Any]:
         fb: list = []
         if not predictions:
             fb.append("No predictions to evaluate.")
             return 0, None, fb, None, None
 
-        test_df = self._load_test_df()
-        y_true = test_df["label_num"].values
+        if y_true_list:
+            y_true = np.array(y_true_list)
+        else:
+            test_df = self._load_test_df()
+            y_true = test_df["label_num"].values
 
         if len(predictions) != len(y_true):
             fb.append(

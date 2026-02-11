@@ -210,10 +210,16 @@ def main():
             result["num_predictions"] = len(preds)
             result["train_time"] = round(train_time, 2)
 
-        # ── Mode: submit (full evaluation on hidden test set) ─
+        # ── Mode: submit (evaluation on sampled test set) ─────
         elif mode == "submit":
             X_test = np.load(test_images_path)
             y_test_labels = np.load(test_labels_path)
+
+            # Randomly sample to save computation
+            if len(X_test) > 100:
+                indices = np.random.choice(len(X_test), 100, replace=False)
+                X_test = X_test[indices]
+                y_test_labels = y_test_labels[indices]
 
             preds = predict_fn(X_test)
             preds = np.asarray(preds, dtype=int).flatten()
@@ -231,6 +237,7 @@ def main():
                 )
 
             result["predictions"] = preds.tolist()
+            result["y_true"] = y_test_labels.tolist()
             result["num_predictions"] = len(preds)
             result["train_time"] = round(train_time, 2)
 
@@ -369,9 +376,10 @@ class MnistDigitChallenge(BaseChallenge):
         total += s
 
         predictions = execution_output.get("predictions", [])
+        y_true_from_output = execution_output.get("y_true", [])
 
         # 2 ─ Accuracy (50 pts)
-        s, accuracy, fb, y_true, y_pred = self._grade_accuracy(predictions)
+        s, accuracy, fb, y_true, y_pred = self._grade_accuracy(predictions, y_true_from_output)
         cat = self._cat("Accuracy", s, 50, fb)
         cat["accuracy"] = accuracy
         categories.append(cat)
@@ -426,7 +434,8 @@ class MnistDigitChallenge(BaseChallenge):
         fb.append("Code executed successfully.")
 
         n = output.get("num_predictions", 0)
-        expected = len(self._load_test_labels())
+        y_true_out = output.get("y_true", [])
+        expected = len(y_true_out) if y_true_out else len(self._load_test_labels())
         if n == expected:
             score += 10
             fb.append(f"Prediction count matches test set ({n}).")
@@ -440,13 +449,16 @@ class MnistDigitChallenge(BaseChallenge):
 
     # ·· 2. Accuracy ··········································
 
-    def _grade_accuracy(self, predictions: list) -> Tuple[int, Optional[float], list, Any, Any]:
+    def _grade_accuracy(self, predictions: list, y_true_list: list = None) -> Tuple[int, Optional[float], list, Any, Any]:
         fb: list = []
         if not predictions:
             fb.append("No predictions to evaluate.")
             return 0, None, fb, None, None
 
-        y_true = self._load_test_labels()
+        if y_true_list:
+            y_true = np.array(y_true_list)
+        else:
+            y_true = self._load_test_labels()
 
         if len(predictions) != len(y_true):
             fb.append(

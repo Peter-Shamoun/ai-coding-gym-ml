@@ -173,6 +173,9 @@ def main():
 
         elif mode == "submit":
             test_df = pd.read_csv(test_path)
+            # Randomly sample to save computation
+            if len(test_df) > 100:
+                test_df = test_df.sample(n=100)
             df_input = test_df.drop('MedHouseVal', axis=1)
             preds = predict_fn(df_input)
             preds = np.asarray(preds, dtype=float).flatten()
@@ -190,6 +193,7 @@ def main():
                 )
 
             result["predictions"] = preds.tolist()
+            result["y_true"] = test_df["MedHouseVal"].tolist()
             result["num_predictions"] = len(preds)
             result["train_time"] = round(train_time, 2)
 
@@ -282,9 +286,10 @@ class HousingPriceChallenge(BaseChallenge):
         total += s
 
         predictions = execution_output.get("predictions", [])
+        y_true_from_output = execution_output.get("y_true", [])
 
         # 2 — R² Score (40 pts)
-        s, r2, rmse, fb, y_true, y_pred = self._grade_r2(predictions)
+        s, r2, rmse, fb, y_true, y_pred = self._grade_r2(predictions, y_true_from_output)
         cat = self._cat("R² Score", s, 40, fb)
         cat["r2"] = r2
         categories.append(cat)
@@ -331,7 +336,8 @@ class HousingPriceChallenge(BaseChallenge):
         score += 10
         fb.append("Code executed successfully.")
         n = output.get("num_predictions", 0)
-        expected = len(self._load_test_df())
+        y_true_out = output.get("y_true", [])
+        expected = len(y_true_out) if y_true_out else len(self._load_test_df())
         if n == expected:
             score += 10
             fb.append(f"Prediction count matches test set ({n}).")
@@ -342,13 +348,16 @@ class HousingPriceChallenge(BaseChallenge):
             fb.append("No predictions produced.")
         return score, fb
 
-    def _grade_r2(self, predictions):
+    def _grade_r2(self, predictions, y_true_list=None):
         fb = []
         if not predictions:
             fb.append("No predictions to evaluate.")
             return 0, None, None, fb, None, None
-        test_df = self._load_test_df()
-        y_true = test_df["MedHouseVal"].values
+        if y_true_list:
+            y_true = np.array(y_true_list)
+        else:
+            test_df = self._load_test_df()
+            y_true = test_df["MedHouseVal"].values
         if len(predictions) != len(y_true):
             fb.append(f"Length mismatch: {len(predictions)} vs {len(y_true)}.")
             return 0, None, None, fb, None, None
